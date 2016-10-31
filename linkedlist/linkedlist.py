@@ -131,7 +131,7 @@ class LinkedList(object):
         old_el = self._pop_after(l)
         return old_el
 
-    def insert(self, value, indx):
+    def insert(self, indx, value):
         """ insert an element btwn LinkedList[indx - 1] and LinkedList[indx] """
 
         indx -= 1
@@ -168,11 +168,11 @@ class LinkedList(object):
     def __len__(self):
         return self.length
 
-    def __getitem__single(self, key):
+    def _getitem__single(self, key):
         """ Returns LinkElement at position key """
         return self.get(key)
 
-    def __getitem__slice(self, slice_k):
+    def _getitem__slice(self, slice_k):
         """ Returns LinkedList of indices specified in slice_k, type slice """
         start = slice_k.start or 0
         stop = slice_k.stop
@@ -204,10 +204,10 @@ class LinkedList(object):
                 - @param - the nth item you want, or the slice of items you want
         """
         if (isinstance(key, slice)):
-            return self.__getitem__slice(key)
+            return self._getitem__slice(key)
 
         elif (isinstance(key, int)):
-            return self.__getitem__single(key)
+            return self._getitem__single(key)
 
         else:
             raise TypeError("Type of {} was passed to __getitem__. Only {} and {} are accepted".format(type(key), slice, int))
