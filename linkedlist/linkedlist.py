@@ -39,23 +39,25 @@ class LinkedList(object):
     def length(self, value):
 
         if (not isinstance(value, int)):
-            raise TypeError("head must be type {}, you passed {}".format(int, type(node)))
+            raise TypeError("head must be type {}, you passed {}".format(int, type(value)))
 
         self.__length = value
 
     ##############################
     ## Private / helper methods ##
     ##############################
-    def __get_nth_el(self, indx):
+    def _get_nth_el(self, indx):
         """ same as getting `indx` of a list item, but instead of following
             sequence, follows links
 
             indx of -1 == head
         """
-        if (indx < -1 or indx >= self.length):
-            raise IndexError("index out of range")
         if (not isinstance(indx, int)):
             raise TypeError("index must be type {}, you passed {}".format(int, type(indx)))
+
+        if (indx < -1 or indx >= self.length):
+            raise IndexError("index out of range")
+
 
         # Q : why not use the built in __iter__ function?
         # A : for the scenario in which you want to insert between the head
@@ -68,14 +70,14 @@ class LinkedList(object):
         return cur_node
 
 
-    def __insert_after(self, value, indx):
+    def _insert_after(self, value, indx):
         """ create a ListElement with `value` and insert after indx """
 
         # create the new node
         new_node = LinkElement()
         new_node.value = value
 
-        prev_node = self.__get_nth_el(indx)
+        prev_node = self._get_nth_el(indx)
 
         # new_node takes on prev_nodes link
         new_node.next = prev_node.next
@@ -83,15 +85,20 @@ class LinkedList(object):
         # prev_node links to new node
         prev_node.next = new_node
 
-    def __pop_after(self, indx):
+        self.length += 1
+
+    def _pop_after(self, indx):
         """ remove the ListElement at `indx` and return """
-        prev_node = self.__get_nth_el(indx)
+        prev_node = self._get_nth_el(indx)
 
         # popped node
         rm_node = prev_node.next
 
         # snip out prev_node.next
         prev_node.next = prev_node.next.next
+
+        self.length -= 1
+
         return rm_node
 
 
@@ -101,13 +108,12 @@ class LinkedList(object):
 
     ### Write ###
     def append(self, value):
-        """ Similar to list's append
+        """ Akin to list's append
 
             value - @type - any
                   - @param - creates a LinkElement with value as LinkElement.value
         """
-        self.__insert_after(value, self.length - 1)
-        self.length += 1
+        self._insert_after(value, self.length - 1)
 
     def prepend(self, value):
         """ Push to the beginning of a LinkedList
@@ -115,24 +121,21 @@ class LinkedList(object):
             value - @type - any
                   - @param - creates a LinkElement with value as LinkElement.value
         """
-        self.__insert_after(value, -1)
-        self.length += 1
+        self._insert_after(value, -1)
 
     def pop(self):
         """ Remove and return the final LinkElement in a list """
 
         l = self.length - 2 # penultimate LinkElement
 
-        old_el = self.__pop_after(l)
-        self.length -= 1
+        old_el = self._pop_after(l)
         return old_el
 
     def insert(self, value, indx):
         """ insert an element btwn LinkedList[indx - 1] and LinkedList[indx] """
 
         indx -= 1
-        self.__insert_after(value, indx)
-        self.length += 1
+        self._insert_after(value, indx)
 
     ### Read ###
     def get(self, indx):
@@ -148,7 +151,7 @@ class LinkedList(object):
         if (indx < 0):
             indx = self.length + indx
 
-        return self.__get_nth_el(indx)
+        return self._get_nth_el(indx)
 
     ###########################
     ### Container type methods
@@ -177,7 +180,7 @@ class LinkedList(object):
 
         L = LinkedList() # Return List
         i = start
-        prev_self = self.__get_nth_el(start - 1)
+        prev_self = self._get_nth_el(start - 1)
         prev_L = L.head
 
         # iterate through remainder of list, saving every nth item to L, where n = step
@@ -211,7 +214,7 @@ class LinkedList(object):
 
     def __setitem__single(self, key, value):
         """ Sets self[key] to new LinkElement of value """
-        prev_el = self.__get_nth_el(key - 1)
+        prev_el = self._get_nth_el(key - 1)
         new_el = LinkElement()
         new_el.value = value
         new_el.next = prev_el.next.next
@@ -234,7 +237,7 @@ class LinkedList(object):
 
         i = start
         j = 0
-        prev_el = self.__get_nth_el(i - 1)
+        prev_el = self._get_nth_el(i - 1)
 
         # from prev_el/start set every nth element to the next value, where n = step
         while (start < stop):
@@ -272,7 +275,7 @@ class LinkedList(object):
     def __delitem__single(self, key):
         """ pop ListElement at `key` """
         prev_i = key - 1
-        self.__pop_after(prev_i)
+        self._pop_after(prev_i)
 
     def __delitem_slice(self, slice_k):
         """ pop all ListElements spec'd by slice_k, type = slice """
@@ -281,7 +284,7 @@ class LinkedList(object):
         stop = slice_k.stop
         step = slice_k.step or 1
 
-        prev_el = self.__get_nth_el(start - 1)
+        prev_el = self._get_nth_el(start - 1)
         i = start
         while (start < stop):
             if (i == start):
