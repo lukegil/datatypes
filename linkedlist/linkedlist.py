@@ -508,24 +508,24 @@ class LinkElement(object):
             See https://docs.python.org/2.7/reference/expressions.html#not-in
         """
         if (not isinstance(cmp_w, type(self))):
-            if (self < cmp_w):
+            if (str(type(self)) < str(type(cmp_w))):
                 return -1
-            elif (cmp_w == self):
+            elif (str(type(cmp_w)) == str(type(self))):
                 return 0
             else:
                 return 1
 
         else:
 
-            if (cmp_w.value < self.value):
+            if ( self.value < cmp_w.value):
                 return -1
-            elif (cmp_w.value > self.value):
-                return 1
-            else:
+            elif (cmp_w.value == self.value):
                 return 0
+            else:
+                return 1
 
     def __gt__(self, cmp_w):
-        if (self.__cmp__(cmp_w) == -1):
+        if (self.__cmp__(cmp_w) == 1):
             return True
         else:
             return False
@@ -537,7 +537,7 @@ class LinkElement(object):
             return False
 
     def __lt__(self, cmp_w):
-        if (self.__cmp__(cmp_w) == 1):
+        if (self.__cmp__(cmp_w) == -1):
             return True
         else:
             return False
