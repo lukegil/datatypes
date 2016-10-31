@@ -1,4 +1,6 @@
-import unittest
+import sys, os, unittest
+if os.getcwd() not in sys.path:
+    sys.path.append(os.getcwd())
 from linkedlist.linkedlist import LinkedList, LinkElement
 
 
@@ -250,7 +252,7 @@ class LL_insert(LinkedList_w_els):
         """ inserting at '0' in empty list should add an element after head, and increase len by 1 """
         L = LinkedList()
 
-        L.insert("tester", 0)
+        L.insert(0, "tester")
         self.assertEqual(L.head.next.value, "tester")
         self.assertEqual(L.length, 1)
         self.assertIs(L.head, L.head.next.next)
@@ -260,7 +262,7 @@ class LL_insert(LinkedList_w_els):
         old_1 = self.L.head.next
         old_2 = self.L.head.next.next
         old_length = self.L.length
-        self.L.insert("tester2", 1)
+        self.L.insert(1, "tester2")
         self.assertIs(self.L.head.next, old_1)
         self.assertEqual(self.L.head.next.next.value, "tester2")
         self.assertIs(self.L.head.next.next.next, old_2)
@@ -269,7 +271,7 @@ class LL_insert(LinkedList_w_els):
     def test_insert_IndexError(self):
         """ trying to insert at an index > length should raise an IndexError """
         with self.assertRaises(IndexError):
-            self.L.insert("tester3", 8)
+            self.L.insert(8, "tester3")
 
 
 class LL_get(LinkedList_w_els):
@@ -284,6 +286,29 @@ class LL_get(LinkedList_w_els):
         with self.assertRaises(IndexError):
             self.L.get(self.L.length)
 
+class LL_iter(LinkedList_w_els):
+
+    def test_iter(self):
+        i = 0
+        for el in self.L:
+            self.assertIs(el, self.L.get(i))
+            i += 1
+
+class LL_len(LinkedList_w_els):
+
+    def test__len__(self):
+        self.assertEqual(len(self.L), self.L.length)
+
+
+class LL_getItemSingle(LinkedList_w_els):
+
+    def test_getitem_single_base(self):
+        """ L[n] should return the n'th element """
+        self.assertIs(self.L._getitem__single(0), self.L.head.next)
+
+    def test_getitem_single_negative(self):
+        """ L[-n] should return n elements from the end of the list """
+        self.assertIs(self.L._getitem__single(-2), self.L.head.next)
 
 
 
