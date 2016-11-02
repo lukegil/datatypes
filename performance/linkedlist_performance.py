@@ -24,7 +24,7 @@ def avg_obj(obj):
         ret.append([key, get_avg(obj[key])])
     return ret
 
-def compare_append(arr_len, step, num_times, safety=10):
+def compare_append(arr_len, insert_n, step, num_times, safety=10):
     LL_time = {}
     NL_time = {}
 
@@ -33,7 +33,7 @@ def compare_append(arr_len, step, num_times, safety=10):
         NL_time[length] = []
 
         for i in range(num_times):
-            append_val = random.random()
+            append_val = [random.random() for x in range(insert_n)]
 
             t2 = Timer()
             t2.start_time()
@@ -43,7 +43,8 @@ def compare_append(arr_len, step, num_times, safety=10):
 
             t = Timer()
             t.start_time()
-            LL.append(append_val)
+            for i in range(insert_n):
+                LL.append(append_val[i])
             t.stop_time()
             LL_time[length].append(t.get_elapsed())
 
@@ -52,7 +53,8 @@ def compare_append(arr_len, step, num_times, safety=10):
 
             t = Timer()
             t.start_time()
-            NL.append(append_val)
+            for i in range(insert_n):
+                NL.append(append_val[i])
             t.stop_time()
             NL_time[length].append(t.get_elapsed())
 
@@ -99,7 +101,7 @@ def compare_prepend(arr_len, step, num_times, safety=10):
 
     return [NL_time, LL_time]
 
-def compare_insert(arr_len, step, num_times, safety=10):
+def compare_insert(arr_len, insert_n, step, num_times, safety=10):
     LL_time = {}
     NL_time = {}
 
@@ -108,8 +110,8 @@ def compare_insert(arr_len, step, num_times, safety=10):
         NL_time[length] = []
 
         for i in range(num_times):
-            insert_val = random.random()
-            insert_index = random.randint(0, length)
+            insert_val = [random.random() for x in range(insert_n)]
+            insert_index = [random.randint(0, length) for x in range(insert_n)]
 
             t2 = Timer()
             t2.start_time()
@@ -119,7 +121,8 @@ def compare_insert(arr_len, step, num_times, safety=10):
 
             t = Timer()
             t.start_time()
-            LL.insert(insert_index, insert_val)
+            for i in range(insert_n):
+                LL.insert(insert_index[i], insert_val[i])
             t.stop_time()
             LL_time[length].append(t.get_elapsed())
 
@@ -128,7 +131,8 @@ def compare_insert(arr_len, step, num_times, safety=10):
 
             t = Timer()
             t.start_time()
-            NL.insert(insert_index, insert_val)
+            for i in range(insert_n):
+                NL.insert(insert_index[i], insert_val[i])
             t.stop_time()
             NL_time[length].append(t.get_elapsed())
 
@@ -138,20 +142,8 @@ def compare_insert(arr_len, step, num_times, safety=10):
 
     return [NL_time, LL_time]
 
-def insertion_sort(A):
 
-    for indx in range(1, len(A)):
-        val = A[indx]
-        lft_indx = indx - 1
-
-        while lft_indx >= 0 and A[lft_indx] > val:
-            A[lft_indx + 1] = A[lft_indx]
-            lft_indx -= 1
-        A[lft_indx + 1] = val
-
-    return A
-
-def compare_insert_sort(arr_len, step, num_times, safety=10):
+def compare_iteration(arr_len, step, num_times, safety=10):
     LL_time = {}
     NL_time = {}
 
@@ -160,15 +152,17 @@ def compare_insert_sort(arr_len, step, num_times, safety=10):
         NL_time[length] = []
 
         for i in range(num_times):
+
             t2 = Timer()
             t2.start_time()
 
             LL = LinkedList()
-            [LL.append(random.random()) for x in range(length) ]
+            [LL.prepend(random.random()) for x in range(length) ]
 
             t = Timer()
             t.start_time()
-            insertion_sort(LL)
+            for i in LL:
+                assert i
             t.stop_time()
             LL_time[length].append(t.get_elapsed())
 
@@ -177,7 +171,8 @@ def compare_insert_sort(arr_len, step, num_times, safety=10):
 
             t = Timer()
             t.start_time()
-            insertion_sort(NL)
+            for i in NL:
+                assert i
             t.stop_time()
             NL_time[length].append(t.get_elapsed())
 
@@ -208,14 +203,26 @@ def graph_results(test, results):
     plot(graph_lines, filename="{}_{}.html".format(test, int(time.time())))
 
 if __name__ == "__main__":
-    ar = compare_append(100001, 10000, 50)
+    # ar = compare_append(100001, 1, 10000, 10)
+    # graph_results("append", ar)
+    #
+    # ar = compare_append(10001, 20, 10000, 1)
+    # graph_results("append", ar)
+
+    ar = compare_append(100001, 100, 10000, 10)
     graph_results("append", ar)
 
-    pr = compare_prepend(100001, 5000, 100)
-    graph_results("prepend", pr)
-    
-    ir = compare_insert(100001, 10000, 50)
+    # pr = compare_prepend(100001, 5000, 100)
+    # graph_results("prepend", pr)
+
+    # ir = compare_insert(10001, 2, 1000, 10)
+    # graph_results("insert", ir)
+    #
+    # ir = compare_insert(10001, 5, 1000, 10)
+    # graph_results("insert", ir)
+
+    ir = compare_insert(100001, 100, 10000, 10)
     graph_results("insert", ir)
 
-    i_s = compare_insert_sort(100001, 10000, 50)
-    graph_results("insertion_sort", i_s)
+    # it_r = compare_iteration(100001, 1000, 10)
+    # graph_results("iteration", it_r)
