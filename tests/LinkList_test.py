@@ -114,6 +114,13 @@ class LL_get_nth_el(LinkedList_w_els):
         i = 1
         self.assertIs(self.L._get_nth_el(i), self.L.head.next.next)
 
+    def test_getNth_cacheNode(self):
+        """ requesting indx '0' should give you the element ref'd by the Head """
+        i = 0
+        self.L._get_nth_el(i)
+        self.assertIs(self.L.cache_node, self.L.head.next)
+        self.assertEqual(self.L.cache_index, i)
+
 class LL_insert_after(LinkedList_w_els):
 
     def test_insertAfter_Head(self):
@@ -309,6 +316,7 @@ class LL_getItemSingle(LinkedList_w_els):
     def test_getitem_single_negative(self):
         """ L[-n] should return n elements from the end of the list """
         self.assertIs(self.L._getitem__single(-2), self.L.head.next)
+
 
 
 

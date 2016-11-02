@@ -13,6 +13,8 @@ class LinkedList(object):
         self.__head = LinkElement()
         self.__head.value = -1
         self.__length = 0
+        self.__cache_node = self.__head
+        self.__cache_index = -1
 
     ################
     ## Properties ##
@@ -43,6 +45,24 @@ class LinkedList(object):
 
         self.__length = value
 
+    @property
+    def cache_node(self):
+        """ a pointer to the node of the last requested index """
+        return self.__cache_node
+
+    @cache_node.setter
+    def cache_node(self, element):
+        self.__cache_node = element
+
+    @property
+    def cache_index(self):
+        """ the index of cache_node """
+        return self.__cache_index
+
+    @cache_index.setter
+    def cache_index(self, index):
+        self.__cache_index = index
+
     ##############################
     ## Private / helper methods ##
     ##############################
@@ -55,18 +75,27 @@ class LinkedList(object):
         if (not isinstance(indx, int)):
             raise TypeError("index must be type {}, you passed {}".format(int, type(indx)))
 
-        if (indx < -1 or indx >= self.length):
+        elif (indx < -1 or indx >= self.length):
             raise IndexError("index out of range")
 
+        elif (indx >= self.cache_index):
+            print "using cache node"
+            i = self.cache_index
+            cur_node = self.cache_node
+
+        else:
+            i = -1
+            cur_node = self.head
 
         # Q : why not use the built in __iter__ function?
         # A : for the scenario in which you want to insert between the head
         #     and the first element
-        i = -1
-        cur_node = self.head
         while (cur_node.next is not self.head and i < indx):
             cur_node = cur_node.next
             i += 1
+
+        self.cache_index = indx
+        self.cache_node = cur_node
         return cur_node
 
 
